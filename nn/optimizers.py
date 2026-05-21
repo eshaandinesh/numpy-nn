@@ -7,4 +7,3 @@ class SGD:
             if hasattr(layer, 'dW'):
                 layer.W = layer.W - self.lr * layer.dW
                 layer.b = layer.b - self.lr * layer.db
-        pass
