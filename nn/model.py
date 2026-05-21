@@ -10,3 +10,4 @@ class Sequential:
     def backward(self, dout):
         for layer in self.layers[::-1]:
             dout = layer.backward(dout)
+        return dout
