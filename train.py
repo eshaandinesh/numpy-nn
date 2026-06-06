@@ -2,7 +2,7 @@ from data.loader import load_mnist
 from nn.layers import Linear
 from nn.activations import ReLU
 from nn.losses import CrossEntropyLoss
-from nn.optimizers import SGD
+from nn.optimizers import Adam
 from nn.model import Sequential
 
 import numpy as np
@@ -20,7 +20,7 @@ model = Sequential([
 ])
 
 loss_fn = CrossEntropyLoss()
-optimizer = SGD(learning_rate=0.1)
+optimizer = Adam(learning_rate=0.001)
 
 # training loop
 epochs = 10
