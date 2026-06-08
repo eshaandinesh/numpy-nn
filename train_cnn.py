@@ -38,6 +38,8 @@ batch_size = 32
 
 loss_history = []
 
+model.train()
+
 for epoch in range(epochs):
     # shuffle data
     indices = np.random.permutation(len(x_train))
@@ -83,6 +85,8 @@ plt.savefig('loss_curve.png')
 save_model(model, 'cnn_mnist.npy')
 
 print("Testing")
+
+model.eval()
 
 logits = model.forward(x_test)
 predictions = np.argmax(logits, axis=1)

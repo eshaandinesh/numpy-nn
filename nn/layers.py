@@ -149,3 +149,28 @@ class Flatten:
         returns: (batch_size, height, width, channels)
         """
         return dout.reshape(self._input_shape)
+    
+class Dropout:
+    def __init__(self, p=0.5):
+        self.p = p
+        self.training = True  # toggle this for inference
+        self._mask = None
+
+    def forward(self, x):
+        """
+        x: any shape
+        returns: same shape as x
+        """
+        if self.training:
+            self._mask = np.random.rand(*x.shape) > self.p
+            x = x * self._mask
+            x *= (1 / (1 - self.p))
+
+        return x
+
+    def backward(self, dout):
+        """
+        dout: same shape as x
+        returns: same shape as x
+        """
+        return dout * self._mask

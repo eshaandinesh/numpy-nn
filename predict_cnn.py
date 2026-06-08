@@ -26,6 +26,7 @@ model = Sequential([
 ])
 
 model = load_model(model, 'cnn_mnist.npy')
+model.eval()
 
 def predict(model, x):
     '''

@@ -19,3 +19,13 @@ class Sequential:
         for layer in self.layers[::-1]:
             dout = layer.backward(dout)
         return dout
+    
+    def train(self):
+        for layer in self.layers:
+            if hasattr(layer, 'training'):
+                layer.training = True
+
+    def eval(self):
+        for layer in self.layers:
+            if hasattr(layer, 'training'):
+                layer.training = False
