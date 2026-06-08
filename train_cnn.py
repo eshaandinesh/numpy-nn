@@ -4,8 +4,10 @@ from nn.activations import ReLU
 from nn.losses import CrossEntropyLoss
 from nn.optimizers import Adam
 from nn.model import Sequential
+from nn.save_load import save_model
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 # load data
 x_train, y_train, x_test, y_test = load_mnist()
@@ -34,6 +36,8 @@ optimizer = Adam(learning_rate=0.001)
 epochs = 10
 batch_size = 32
 
+loss_history = []
+
 for epoch in range(epochs):
     # shuffle data
     indices = np.random.permutation(len(x_train))
@@ -60,8 +64,23 @@ for epoch in range(epochs):
         optimizer.step(model.layers)
 
         total_loss += loss
+    
+    loss_history.append(total_loss / num_batches)
 
     print(f"Epoch {epoch+1}/{epochs} - Loss: {total_loss/num_batches:.4f}")
+
+epoch_range = range(1, len(loss_history) + 1)
+
+plt.figure(figsize=(8, 5))
+plt.plot(epoch_range, loss_history, label='Training Loss', marker='o')
+plt.title('Loss Curve')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid(True)
+plt.savefig('loss_curve.png')
+
+save_model(model, 'cnn_mnist.npy')
 
 print("Testing")
 
