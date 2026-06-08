@@ -20,4 +20,4 @@ Building a deep learning framework using only NumPy, no PyTorch or TensorFlow.
 - CNN (Conv2D → MaxPool2D → Conv2D → MaxPool2D → Flatten → Linear) — 99.14% test accuracy on MNIST
 
 ## Next
-- Gradient check to verify backprop
+- LR scheduler

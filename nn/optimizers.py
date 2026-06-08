@@ -13,6 +13,9 @@ class SGD:
             if hasattr(layer, 'dW'):
                 layer.W = layer.W - self.lr * layer.dW
                 layer.b = layer.b - self.lr * layer.db
+            if hasattr(layer, 'dgamma'):
+                layer.gamma = layer.gamma - self.lr * layer.dgamma
+                layer.beta = layer.beta - self.lr * layer.dbeta
 
 
 class Adam:
@@ -50,3 +53,22 @@ class Adam:
 
                 layer.W = layer.W - self.lr * m_W / (np.sqrt(v_W) + self.epsilon)
                 layer.b = layer.b - self.lr * m_b / (np.sqrt(v_b) + self.epsilon)
+            
+            if hasattr(layer, 'dgamma'):
+                key = f"{i}_bn"
+                if key not in self.m:
+                    self.m[key] = {'gamma': np.zeros_like(layer.gamma), 'beta': np.zeros_like(layer.beta)}
+                    self.v[key] = {'gamma': np.zeros_like(layer.gamma), 'beta': np.zeros_like(layer.beta)}
+
+                self.m[key]['gamma'] = self.beta1 * self.m[key]['gamma'] + (1 - self.beta1) * layer.dgamma
+                self.m[key]['beta'] = self.beta1 * self.m[key]['beta'] + (1 - self.beta1) * layer.dbeta
+                self.v[key]['gamma'] = self.beta2 * self.v[key]['gamma'] + (1 - self.beta2) * layer.dgamma**2
+                self.v[key]['beta'] = self.beta2 * self.v[key]['beta'] + (1 - self.beta2) * layer.dbeta**2
+
+                m_gamma = self.m[key]['gamma'] / (1 - self.beta1**self.t)
+                m_beta = self.m[key]['beta'] / (1 - self.beta1**self.t)
+                v_gamma = self.v[key]['gamma'] / (1 - self.beta2**self.t)
+                v_beta = self.v[key]['beta'] / (1 - self.beta2**self.t)
+
+                layer.gamma = layer.gamma - self.lr * m_gamma / (np.sqrt(v_gamma) + self.epsilon)
+                layer.beta = layer.beta - self.lr * m_beta / (np.sqrt(v_beta) + self.epsilon)

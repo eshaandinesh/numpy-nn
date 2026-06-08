@@ -174,3 +174,58 @@ class Dropout:
         returns: same shape as x
         """
         return dout * self._mask
+    
+class BatchNorm:
+    def __init__(self, num_features, momentum=0.9, epsilon=1e-5):
+        self.gamma = np.ones((1, num_features))
+        self.beta = np.zeros((1, num_features))
+        self.momentum = momentum
+        self.epsilon = epsilon
+        self.training = True
+
+        self.running_mean = np.zeros((1, num_features)) 
+        self.running_var = np.ones((1, num_features))
+
+        # cache for backward
+        self._x_norm = None
+        self._var = None
+        self._mean = None
+
+        # gradients
+        self.dgamma = None
+        self.dbeta = None
+
+        self._input = None
+
+    def forward(self, x):
+        """
+        x: (batch_size, num_features)
+        returns: (batch_size, num_features)
+        """
+        self._input = x
+        if self.training:
+            self._mean = np.mean(x, axis=0)
+            self._var = np.var(x, axis=0)
+            self._x_norm = (x - self._mean) / np.sqrt(self._var + self.epsilon)
+            out = self.gamma * self._x_norm + self.beta
+            self.running_mean = self.momentum * self.running_mean + (1 - self.momentum) * self._mean
+            self.running_var = self.momentum * self.running_var + (1 - self.momentum) * self._var
+        else:
+            self._x_norm = (x - self.running_mean) / np.sqrt(self.running_var + self.epsilon)
+            out = self.gamma * self._x_norm + self.beta
+
+        return out
+
+    def backward(self, dout):
+        """
+        dout: (batch_size, num_features)
+        returns dx: (batch_size, num_features)
+        """
+        self.dgamma = np.sum(dout * self._x_norm, axis=0, keepdims=True)
+        self.dbeta = np.sum(dout, axis=0, keepdims=True)
+        dx_norm = dout * self.gamma
+        dvar = np.sum(dx_norm * (self._input - self._mean) * -0.5 * (self._var + self.epsilon)**(-3/2), axis=0)
+        dmean = np.sum(dx_norm * -1/np.sqrt(self._var + self.epsilon), axis=0) + dvar * np.mean(-2*(self._input - self._mean), axis=0)
+        dx = dx_norm/np.sqrt(self._var+self.epsilon) + dvar * 2*(self._input-self._mean)/dout.shape[0] + dmean/dout.shape[0]
+
+        return dx

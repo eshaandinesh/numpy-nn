@@ -1,5 +1,5 @@
 from data.loader import load_mnist
-from nn.layers import Linear
+from nn.layers import Linear, BatchNorm
 from nn.activations import ReLU
 from nn.losses import CrossEntropyLoss
 from nn.optimizers import Adam
@@ -15,8 +15,10 @@ x_train, y_train, x_test, y_test = load_mnist()
 # define model
 model = Sequential([
     Linear(784, 128),
+    BatchNorm(128),
     ReLU(),
     Linear(128, 64),
+    BatchNorm(64),
     ReLU(),
     Linear(64, 10)
 ])
