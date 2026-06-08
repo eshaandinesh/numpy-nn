@@ -72,3 +72,22 @@ class Adam:
 
                 layer.gamma = layer.gamma - self.lr * m_gamma / (np.sqrt(v_gamma) + self.epsilon)
                 layer.beta = layer.beta - self.lr * m_beta / (np.sqrt(v_beta) + self.epsilon)
+
+class ReduceLROnPlateau:
+    def __init__(self, optimizer, factor=0.5, patience=3, min_lr=1e-6):
+        self.optimizer = optimizer
+        self.factor = factor
+        self.patience = patience
+        self.min_lr = min_lr
+        self.best_loss = float('inf')
+        self.counter = 0
+
+    def step(self, loss):
+        if loss < self.best_loss:
+            self.counter = 0
+            self.best_loss = loss
+        else:
+            self.counter += 1
+        if self.counter >= self.patience:
+            self.optimizer.lr = max(self.optimizer.lr * self.factor, self.min_lr) 
+            self.counter = 0

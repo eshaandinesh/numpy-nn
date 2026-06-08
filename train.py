@@ -2,7 +2,7 @@ from data.loader import load_mnist
 from nn.layers import Linear, BatchNorm
 from nn.activations import ReLU
 from nn.losses import CrossEntropyLoss
-from nn.optimizers import Adam
+from nn.optimizers import Adam, ReduceLROnPlateau
 from nn.model import Sequential
 from nn.save_load import save_model
 
@@ -25,6 +25,7 @@ model = Sequential([
 
 loss_fn = CrossEntropyLoss()
 optimizer = Adam(learning_rate=0.001)
+scheduler = ReduceLROnPlateau(optimizer, factor=0.5, patience=3)
 
 # training loop
 epochs = 10
@@ -64,6 +65,8 @@ for epoch in range(epochs):
     loss_history.append(total_loss / num_batches)
 
     print(f"Epoch {epoch+1}/{epochs} - Loss: {total_loss/num_batches:.4f}")
+
+    scheduler.step(total_loss / num_batches)
 
 epoch_range = range(1, len(loss_history) + 1)
 
