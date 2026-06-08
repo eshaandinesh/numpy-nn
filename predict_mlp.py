@@ -23,7 +23,7 @@ model.eval()
 
 def predict(model, x):
     '''
-    x: single image, shape (28, 28, 1)
+    x: single image, shape (784,)
     '''
     logits = model.forward(x)
     return np.argmax(logits)
