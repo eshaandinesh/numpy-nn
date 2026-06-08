@@ -129,3 +129,23 @@ class MaxPool2D:
                 dx[:, i*ps:(i+1)*ps, j*ps:(j+1)*ps, :] += d * self._mask[:, i*ps:(i+1)*ps, j*ps:(j+1)*ps, :]
 
         return dx
+
+class Flatten:
+    def __init__(self):
+        self._input_shape = None
+
+    def forward(self, x):
+        """
+        x: (batch_size, height, width, channels)
+        returns: (batch_size, height*width*channels)
+        """
+        self._input_shape = x.shape
+        return x.reshape(x.shape[0], -1)
+
+
+    def backward(self, dout):
+        """
+        dout: (batch_size, height*width*channels)
+        returns: (batch_size, height, width, channels)
+        """
+        return dout.reshape(self._input_shape)

@@ -3,14 +3,14 @@
 Building a deep learning framework using only NumPy, no PyTorch or TensorFlow.
 
 ## Implemented
-- `nn/layers.py` — Linear layer (forward + backprop)
+- `nn/layers.py` — Linear, Conv2D, MaxPool2D, Flatten
 - `nn/activations.py` — ReLU
-- `nn/losses.py` — CrossEntropyLoss (softmax + cross entropy, numerically stable)
+- `nn/losses.py` — CrossEntropyLoss
 - `nn/optimizers.py` — SGD, Adam
-- `nn/model.py` — Sequential container
+- `nn/model.py` — Sequential
 - `data/loader.py` — MNIST loader via Keras
 - MLP (784 → 128 → 64 → 10) — 97.82% test accuracy on MNIST
 
 ## Next
-- Conv2D + MaxPool2D
-- CNN on MNIST (target: 99%+)
+- Train CNN on MNIST (target: 99%+)
+- Gradient check to verify Conv2D backprop
