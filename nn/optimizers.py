@@ -5,6 +5,10 @@ class SGD:
         self.lr = learning_rate
 
     def step(self, layers):
+        """
+        layers: list of layer objects
+        updates W and b in-place for all layers with dW
+        """
         for layer in layers:
             if hasattr(layer, 'dW'):
                 layer.W = layer.W - self.lr * layer.dW
@@ -22,6 +26,10 @@ class Adam:
         self.v = {}  # second moment for each layer
 
     def step(self, layers):
+        """
+        layers: list of layer objects
+        updates W and b in-place for all layers with dW
+        """
         self.t += 1
         for i, layer in enumerate(layers):
             if hasattr(layer, 'dW'):

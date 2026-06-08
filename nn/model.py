@@ -3,11 +3,19 @@ class Sequential:
         self.layers = layers
 
     def forward(self, x):
+        """
+        x: input array of any shape
+        returns: output after passing through all layers in order
+        """
         for layer in self.layers:
             x = layer.forward(x)
         return x
 
     def backward(self, dout):
+        """
+        dout: gradient from next layer
+        returns: gradient after passing through all layers in reverse
+        """
         for layer in self.layers[::-1]:
             dout = layer.backward(dout)
         return dout
