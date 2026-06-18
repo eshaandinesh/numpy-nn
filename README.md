@@ -7,7 +7,7 @@ A deep learning framework built entirely from scratch using only NumPy, no PyTor
 Most people who "know deep learning" have never actually derived or implemented backpropagation themselves - frameworks like PyTorch hide it behind autograd. This project builds that engine from the ground up to understand exactly what's happening under the hood, from a single Linear layer up to a working CNN.
 
 ## Architecture
-- `nn/layers.py`  Linear, Conv2D, MaxPool2D, Flatten, BatchNorm, Dropout
+- `nn/layers.py` - Linear, Conv2D, MaxPool2D, Flatten, BatchNorm, Dropout
 - `nn/activations.py` - ReLU, Sigmoid, Tanh
 - `nn/losses.py` - CrossEntropyLoss, MSELoss
 - `nn/optimizers.py` - SGD, Adam, ReduceLROnPlateau
