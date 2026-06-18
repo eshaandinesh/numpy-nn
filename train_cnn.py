@@ -9,12 +9,21 @@ from nn.save_load import save_model
 
 import numpy as np
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 # load data
 x_train, y_train, x_test, y_test = load_mnist()
 
 x_train = x_train.reshape(-1, 28, 28, 1)
 x_test = x_test.reshape(-1, 28, 28, 1)
+
+val_split = 0.1
+val_size = int(len(x_train) * val_split)
+
+x_val = x_train[:val_size]
+y_val = y_train[:val_size]
+x_train = x_train[val_size:]
+y_train = y_train[val_size:]
 
 # define model
 model = Sequential([
@@ -38,6 +47,7 @@ epochs = 10
 batch_size = 32
 
 loss_history = []
+val_loss_history = []
 
 model.train()
 
@@ -50,7 +60,7 @@ for epoch in range(epochs):
     total_loss = 0
     num_batches = len(x_train) // batch_size
 
-    for i in range(num_batches):
+    for i in tqdm(range(num_batches), desc=f"Epoch {epoch+1}/{epochs}"):
         # get batch
         x_batch = x_train[i*batch_size:(i+1)*batch_size]
         y_batch = y_train[i*batch_size:(i+1)*batch_size]
@@ -70,12 +80,21 @@ for epoch in range(epochs):
     
     loss_history.append(total_loss / num_batches)
 
-    print(f"Epoch {epoch+1}/{epochs} - Loss: {total_loss/num_batches:.4f}")
+    model.eval()
+    val_logits = model.forward(x_val)
+    val_loss = loss_fn.forward(val_logits, y_val)
+    model.train()
+    val_loss_history.append(val_loss)
+
+    print(f"Epoch {epoch+1}/{epochs} - Train Loss: {total_loss/num_batches:.4f} - Val Loss: {val_loss:.4f}")
+
+
 
 epoch_range = range(1, len(loss_history) + 1)
 
 plt.figure(figsize=(8, 5))
 plt.plot(epoch_range, loss_history, label='Training Loss', marker='o')
+plt.plot(epoch_range, val_loss_history, label='Validation Loss', marker='o')
 plt.title('Loss Curve')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
