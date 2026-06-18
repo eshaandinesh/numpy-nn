@@ -4,6 +4,7 @@ from nn.activations import ReLU
 from nn.losses import CrossEntropyLoss
 from nn.optimizers import Adam, ReduceLROnPlateau
 from nn.model import Sequential
+from nn.metrics import accuracy, macro_precision, macro_recall
 from nn.save_load import save_model
 
 import numpy as np
@@ -87,5 +88,11 @@ model.eval() # doesnt matter rn because no dropout
 
 logits = model.forward(x_test)
 predictions = np.argmax(logits, axis=1)
-accuracy = np.mean(predictions == y_test) * 100
-print(f"Test Accuracy: {accuracy:.2f}%")
+
+acc = accuracy(predictions, y_test)
+prec = macro_precision(predictions, y_test, num_classes=10)
+rec = macro_recall(predictions, y_test, num_classes=10)
+
+print(f"Test Accuracy: {acc*100:.2f}%")
+print(f"Macro Precision: {prec:.4f}")
+print(f"Macro Recall: {rec:.4f}")
