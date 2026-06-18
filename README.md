@@ -26,9 +26,12 @@ Most people who "know deep learning" have never actually derived or implemented 
 | Model | Test Accuracy | Macro Precision | Macro Recall |
 |---|---|---|---|
 | MLP (784 → 128 → 64 → 10) | 98.13% | 0.9811 | 0.9813 |
-| CNN (Conv→Pool→Conv→Pool→FC) | 99.02% | 0.9903 | 0.9901 |
+| CNN (no regularization) | 99.02% | 0.9903 | 0.9901 |
+| CNN (BatchNorm + Droupout) | 99.36% | 0.9936 | 0.9935 |
 
 Trained on MNIST, 10 epochs, batch size 32, Adam optimizer.
+
+Adding BatchNorm and Dropout to the CNN's fully-connected layers reduced the train/validation loss gap significantly — validation loss plateaued around epoch 4 without regularization but kept improving through epoch 10 with it, alongside a meaningful accuracy gain.
 
 ![Loss Curve](loss_curve.png)
 
