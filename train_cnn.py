@@ -1,5 +1,5 @@
 from data.loader import load_mnist
-from nn.layers import Linear, Conv2D, MaxPool2D, Flatten
+from nn.layers import Linear, Conv2D, MaxPool2D, Flatten, BatchNorm, Dropout
 from nn.activations import ReLU
 from nn.losses import CrossEntropyLoss
 from nn.optimizers import Adam
@@ -35,7 +35,9 @@ model = Sequential([
     MaxPool2D(pool_size=2),
     Flatten(),
     Linear(64 * 5 * 5, 128),
+    BatchNorm(128),
     ReLU(),
+    Dropout(p=0.3),
     Linear(128, 10)
 ])
 

@@ -44,28 +44,39 @@ Backpropagation was verified using numerical gradient checking — comparing ana
 ## Usage
 
 ```python
-from nn.layers import Linear, Conv2D, MaxPool2D, Flatten
+from nn.layers import Linear, Conv2D, MaxPool2D, Flatten, BatchNorm, Dropout
 from nn.activations import ReLU
 from nn.losses import CrossEntropyLoss
-from nn.optimizers import Adam
+from nn.optimizers import Adam, ReduceLROnPlateau
 from nn.model import Sequential
+from nn.metrics import accuracy
 
 model = Sequential([
     Conv2D(in_channels=1, num_filters=32, filter_size=3),
     ReLU(),
     MaxPool2D(pool_size=2),
     Flatten(),
-    Linear(13*13*32, 10)
+    Linear(13*13*32, 128),
+    BatchNorm(128),
+    ReLU(),
+    Dropout(p=0.3),
+    Linear(128, 10)
 ])
 
 loss_fn = CrossEntropyLoss()
 optimizer = Adam(learning_rate=0.001)
+scheduler = ReduceLROnPlateau(optimizer, patience=3)
 
+model.train()
 logits = model.forward(x_batch)
 loss = loss_fn.forward(logits, y_batch)
 dout = loss_fn.backward()
 model.backward(dout)
 optimizer.step(model.layers)
+
+model.eval()
+predictions = np.argmax(model.forward(x_test), axis=1)
+print(accuracy(predictions, y_test))
 ```
 
 ## Running
