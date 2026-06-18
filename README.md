@@ -1,6 +1,8 @@
 # NumPy Neural Network from Scratch
 
-A deep learning framework built entirely from scratch using only NumPy, no PyTorch or TensorFlow. Every gradient, and every optimizer is implemented and mathematically verified by hand.
+A deep learning framework built entirely from scratch using only NumPy, no PyTorch or TensorFlow. Implements a full forward/backward pipeline including convolutional layers, batch normalization, dropout, and the Adam optimizer, all mathematically verified through gradient checking.
+
+As a demonstration, the framework was used to train an MLP and a CNN on MNIST digit classification, achieving 98.13% and 99.36% test accuracy respectively. The framework also supports regression tasks via MSELoss, though this wasn't separately benchmarked here.
 
 ## Why
 
@@ -15,9 +17,9 @@ Most people who "know deep learning" have never actually derived or implemented 
 - `nn/metrics.py` - Accuracy, precision, recall(binary + macro-averaged)
 - `nn/save_load.py` - save/load model weights
 - `data/loader.py` - MNIST loader via Keras
-- `train.py` - MLP training, 98.12% test accuracy
-- `train_cnn.py` - CNN training, 99.14% test accuracy
-- `predict.py` - CNN inference
+- `train.py` - MLP training
+- `train_cnn.py` - CNN training (with BatchNorm + Dropout)
+- `predict_cnn.py` - CNN inference + sample prediction visualization
 - `predict_mlp.py` - MLP inference
 - `grad_check.py` - gradient verification, Linear 8.88e-12, Conv2D 2.24e-11
 
@@ -27,13 +29,17 @@ Most people who "know deep learning" have never actually derived or implemented 
 |---|---|---|---|
 | MLP (784 → 128 → 64 → 10) | 98.13% | 0.9811 | 0.9813 |
 | CNN (no regularization) | 99.02% | 0.9903 | 0.9901 |
-| CNN (BatchNorm + Droupout) | 99.36% | 0.9936 | 0.9935 |
+| CNN (BatchNorm + Dropout) | 99.36% | 0.9936 | 0.9935 |
 
 Trained on MNIST, 10 epochs, batch size 32, Adam optimizer.
 
 Adding BatchNorm and Dropout to the CNN's fully-connected layers reduced the train/validation loss gap significantly - validation loss plateaued around epoch 4 without regularization but kept improving through epoch 10 with it, alongside a meaningful accuracy gain.
 
 ![Loss Curve](loss_curve.png)
+
+## Sample Predictions
+
+![Predictions](predictions.png)
 
 ## Verified Correctness
 
@@ -89,6 +95,6 @@ pip install numpy tensorflow matplotlib tqdm
 
 python train.py        # train MLP
 python train_cnn.py    # train CNN
-python predict.py      # run inference on saved CNN
+python predict_cnn.py  # run inference + generate predictions.png
 python grad_check.py   # verify gradients numerically
 ```
