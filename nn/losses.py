@@ -29,3 +29,26 @@ class CrossEntropyLoss:
         dx = self._probs - one_hot
         dx /= len(self._labels)
         return dx
+    
+class MSELoss:
+    def __init__(self):
+        self._predictions = None
+        self._targets = None
+
+    def forward(self, predictions, targets):
+        """
+        predictions: (batch_size, output_dim)
+        targets: (batch_size, output_dim)
+        returns: scalar loss
+        """
+        self._predictions = predictions
+        self._targets = targets
+        loss = np.mean((self._predictions - self._targets) ** 2)
+        return loss
+
+    def backward(self):
+        """
+        returns dx: (batch_size, output_dim)
+        """
+        dx = 2 * (self._predictions - self._targets) / len(self._targets)
+        return dx
